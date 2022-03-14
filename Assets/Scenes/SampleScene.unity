@@ -315,8 +315,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78fc42e04d4712a4c8b623115ab9432d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 0
-  height: 0
+  width: 50
+  height: 50
   isStop: 1
   cellObj: {fileID: 149635089375425223, guid: a04c5e2212bc7814f8c111d84faba648, type: 3}
 --- !u!1 &2133591109

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     public bool isAlive = false;
+    public int neighborCount = 0;
 
     private SpriteRenderer spriteRender;
 
