@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    private int width;
-    [SerializeField]
-    private int height;
+    public int width;
+    public int height;
 
-    [SerializeField]
-    private bool isStop = false;
+    public bool isStop = false;
+
+    public float checkTick;
+    private float time;
 
     public GameObject cellObj;
     private Cell[,] grid;
-
-
 
 
     private void Start()
@@ -27,25 +25,33 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            CheckAlive();
+            isStop = !isStop;
         }
     }
 
     private void FixedUpdate()
     {
+        if (isStop) return;
 
+        time += Time.deltaTime;
+        if(time > checkTick)
+        {
+            time = 0;
+            CheckAlive();
+        }
     }
 
     public void setScale()
     {
-        grid = new Cell[width, height];
-        for (int y = 0; y < height; y++)
+        grid = new Cell[width + 1, height + 1];
+        for (int y = -(height / 2); y <= height / 2; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = -(width / 2); x <= width / 2; x++)
             {
+                //vector ¹Ù²Ù±â;
                 Vector2 vector = new Vector2(x, y);
                 Cell cell = Instantiate(cellObj, vector, Quaternion.identity).GetComponent<Cell>();
-                grid[x, y] = cell;
+                grid[x + (width / 2), y + (height/ 2)] = cell;
             }
         }
     }
