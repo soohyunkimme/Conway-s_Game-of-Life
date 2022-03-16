@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
         if (isStop) return;
 
         time += Time.deltaTime;
-        if(time > checkTick)
+        if (time > checkTick)
         {
             time = 0;
             CheckAlive();
@@ -51,9 +51,10 @@ public class GameManager : MonoBehaviour
                 //vector ¹Ù²Ù±â;
                 Vector2 vector = new Vector2(x, y);
                 Cell cell = Instantiate(cellObj, vector, Quaternion.identity).GetComponent<Cell>();
-                grid[x + (width / 2), y + (height/ 2)] = cell;
+                grid[x + (width / 2), y + (height / 2)] = cell;
             }
         }
+        GetComponent<CameraController>().SetCameraMaxDistance(width, height);
     }
 
     private void CheckAlive()

@@ -9,13 +9,10 @@ public class CameraController : MonoBehaviour
     private float xMove;
     private float yMove;
 
-    private float cameraMaxWidth = 25.5f;
-    private float cameraMaxHeight = 25.5f;
+    private float cameraMaxWidth = 0;
+    private float cameraMaxHeight = 0;
 
-    private float orthographicSize;
-    private float targetOrthographicSize;
-    const float minOrthographicSize = 5f;
-    const float maxOrthographicSize = 25.5f;
+    private const float minOrthographicSize = 3f;
 
     private void Update()
     {
@@ -28,19 +25,26 @@ public class CameraController : MonoBehaviour
         ChangeCameraSize();
         Vector2 inputMove = new Vector2(xMove, yMove) * moveSpeed;
         Camera.main.transform.position = (Vector3)inputMove + Camera.main.transform.position;
-        //CameraLock();
+        CameraLock();
     }
 
+
+    private float orthographicSize;
+    private float targetOrthographicSize;
+    private float maxOrthographicSize;
     private void ChangeCameraSize()
     {
+        if(minOrthographicSize < cameraMaxWidth || minOrthographicSize < cameraMaxHeight)
+        {
+            return;
+        }
         float zoomAmount = 2f;
         targetOrthographicSize += -Input.mouseScrollDelta.y * zoomAmount;
         targetOrthographicSize = Mathf.Clamp(targetOrthographicSize, minOrthographicSize, maxOrthographicSize);
 
         // 부드러운 느낌을 주기 위한 코드
-        //float zoomSpeed = 5f;
-        //orthographicSize = Mathf.Lerp(orthographicSize, targetOrthographicSize, Time.deltaTime * zoomSpeed);
-        orthographicSize = targetOrthographicSize;
+        float zoomSpeed = 5f;
+        orthographicSize = Mathf.Lerp(orthographicSize, targetOrthographicSize, Time.deltaTime * zoomSpeed);
 
         Camera.main.orthographicSize = orthographicSize;
     }
@@ -68,5 +72,19 @@ public class CameraController : MonoBehaviour
 
         Vector2 vector2 = new Vector2(xlock, ylock);
         Camera.main.transform.position = (Vector3)vector2 + Camera.main.transform.position;
+    }
+
+    public void SetCameraMaxDistance(float Width, float Height)
+    {
+        cameraMaxWidth = Width / 2;
+        cameraMaxHeight = Height / 2;
+
+        if (cameraMaxWidth / Camera.main.aspect < cameraMaxHeight)
+            maxOrthographicSize = cameraMaxWidth / Camera.main.aspect;
+        else
+            maxOrthographicSize = cameraMaxHeight;
+
+        cameraMaxWidth += 0.5f;
+        cameraMaxHeight += 0.5f;
     }
 }
