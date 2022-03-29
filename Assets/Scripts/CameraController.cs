@@ -16,16 +16,14 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        xMove = Input.GetAxis("Horizontal");
-        yMove = Input.GetAxis("Vertical");
+        xMove = Input.GetAxisRaw("Horizontal");
+        yMove = Input.GetAxisRaw("Vertical");
     }
 
     private void FixedUpdate()
     {
         ChangeCameraSize();
-        Vector2 inputMove = new Vector2(xMove, yMove) * moveSpeed;
-        Camera.main.transform.position = (Vector3)inputMove + Camera.main.transform.position;
-        CameraLock();
+        CameraMove();
     }
 
 
@@ -34,10 +32,6 @@ public class CameraController : MonoBehaviour
     private float maxOrthographicSize;
     private void ChangeCameraSize()
     {
-        if(minOrthographicSize < cameraMaxWidth || minOrthographicSize < cameraMaxHeight)
-        {
-            return;
-        }
         float zoomAmount = 2f;
         targetOrthographicSize += -Input.mouseScrollDelta.y * zoomAmount;
         targetOrthographicSize = Mathf.Clamp(targetOrthographicSize, minOrthographicSize, maxOrthographicSize);
@@ -49,29 +43,29 @@ public class CameraController : MonoBehaviour
         Camera.main.orthographicSize = orthographicSize;
     }
 
-    private void CameraLock()
+    private void CameraMove()
     {
-        float ylock = 0;
-        float xlock = 0;
-        if (Camera.main.transform.position.y + Camera.main.orthographicSize > cameraMaxHeight)
+        Vector3 cameraPos = new Vector3(xMove, yMove) * moveSpeed + Camera.main.transform.position;
+
+        if (cameraMaxWidth < Camera.main.orthographicSize * Camera.main.aspect)
         {
-            ylock = cameraMaxHeight - (Camera.main.transform.position.y + Camera.main.orthographicSize);
+            cameraPos.x = 0;
         }
-        if (Camera.main.transform.position.y - Camera.main.orthographicSize < -cameraMaxHeight)
+        else
         {
-            ylock = -cameraMaxHeight - (Camera.main.transform.position.y - Camera.main.orthographicSize);
-        }
-        if (Camera.main.transform.position.x + (Camera.main.orthographicSize * Camera.main.aspect) > cameraMaxWidth)
-        {
-            xlock = cameraMaxWidth - (Camera.main.transform.position.x + (Camera.main.orthographicSize * Camera.main.aspect));
-        }
-        if (Camera.main.transform.position.x - (Camera.main.orthographicSize * Camera.main.aspect) < -cameraMaxWidth)
-        {
-            xlock = -cameraMaxWidth - (Camera.main.transform.position.x - (Camera.main.orthographicSize * Camera.main.aspect));
+            cameraPos.x = Mathf.Clamp(cameraPos.x, -cameraMaxWidth + Camera.main.orthographicSize * Camera.main.aspect, cameraMaxWidth - Camera.main.orthographicSize * Camera.main.aspect);
         }
 
-        Vector2 vector2 = new Vector2(xlock, ylock);
-        Camera.main.transform.position = (Vector3)vector2 + Camera.main.transform.position;
+        if (cameraMaxHeight < Camera.main.orthographicSize)
+        {
+            cameraPos.y = 0;
+        }
+        else
+        {
+            cameraPos.y = Mathf.Clamp(cameraPos.y, -cameraMaxHeight + Camera.main.orthographicSize, cameraMaxHeight - Camera.main.orthographicSize);
+        }
+
+        Camera.main.transform.position = cameraPos;
     }
 
     public void SetCameraMaxDistance(float Width, float Height)

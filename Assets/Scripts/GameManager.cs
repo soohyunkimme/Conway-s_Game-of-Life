@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public int width;
-    public int height;
+    [SerializeField]
+    private int width;
+    [SerializeField]
+    private int height;
 
     public bool isStop = false;
 
@@ -18,7 +20,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        setScale();
+        //setScale();
     }
 
     private void Update()
@@ -41,8 +43,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void setScale()
+    public void setScale(int _width, int _height)
     {
+        width = _width;
+        height = _height;
+
         grid = new Cell[width + 1, height + 1];
         for (int y = -(height / 2); y <= height / 2; y++)
         {
