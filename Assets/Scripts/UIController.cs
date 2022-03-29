@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIController : MonoBehaviour
 {
     private GameManager gameManager;
 
@@ -37,12 +37,24 @@ public class UIManager : MonoBehaviour
                 isCheck = false;
                 StartCoroutine(ShowMenu());
             }
-            else if (isCheck && isUp)
+            else
             {
-                isCheck = false;
-                StartCoroutine(CloseMenu());
+                if (widthInputField.text == string.Empty && heightInputField.text == string.Empty)
+                {
+                    WarningPopup();
+                }
+                else
+                {
+                    isCheck = false;
+                    StartCoroutine(CloseMenu());
+                    gameManager.DestroyCells();
+                    gameManager.SetScale(int.Parse(widthInputField.text), int.Parse(heightInputField.text));
+                }
             }
         });
+
+        Button closeButton = warningPanel.GetComponentInChildren<Button>();
+        closeButton.onClick.AddListener(() => warningPanel.SetActive(false));
     }
 
     IEnumerator ShowMenu()
@@ -76,29 +88,10 @@ public class UIManager : MonoBehaviour
             }
             yield return null;
         }
-        if (widthInputField.text != "" && heightInputField.text != "")
-        {
-            gameManager.setScale(int.Parse(widthInputField.text), int.Parse(heightInputField.text));
-        }
-        else
-        {
-            WarningPopup();
-        }
     }
 
     private void WarningPopup()
     {
-        Button closeButton = warningPanel.GetComponentInChildren<Button>();
-        closeButton.onClick.AddListener(() => warningPanel.SetActive(false));
-
-
-        Text text = GetComponentInChildren<Text>();
-
-        if(widthInputField.text == string.Empty ||heightInputField.text == string.Empty )
-        {
-            text.text = "inputfield is empty";
-        }
-
         warningPanel.SetActive(true);
     }
 }

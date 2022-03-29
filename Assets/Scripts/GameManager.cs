@@ -43,8 +43,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void setScale(int _width, int _height)
+    public void SetScale(int _width, int _height)
     {
+        //Â¦¼ö°¡ ¾ÈµÊ
         width = _width;
         height = _height;
 
@@ -55,11 +56,21 @@ public class GameManager : MonoBehaviour
             {
                 //vector ¹Ù²Ù±â;
                 Vector2 vector = new Vector2(x, y);
-                Cell cell = Instantiate(cellObj, vector, Quaternion.identity).GetComponent<Cell>();
+                Cell cell = Instantiate(cellObj, this.gameObject.transform).GetComponent<Cell>();
+                cell.gameObject.transform.position = vector;
                 grid[x + (width / 2), y + (height / 2)] = cell;
             }
         }
         GetComponent<CameraController>().SetCameraMaxDistance(width, height);
+    }
+
+    public void DestroyCells()
+    {
+        Cell[] ts = gameObject.GetComponentsInChildren<Cell>();
+        foreach (Cell item in ts)
+        {
+            Destroy(item.gameObject);
+        }
     }
 
     private void CheckAlive()

@@ -26,12 +26,12 @@ public class CameraController : MonoBehaviour
         CameraMove();
     }
 
-
     private float orthographicSize;
     private float targetOrthographicSize;
     private float maxOrthographicSize;
     private void ChangeCameraSize()
     {
+        if (minOrthographicSize > maxOrthographicSize) return;
         float zoomAmount = 2f;
         targetOrthographicSize += -Input.mouseScrollDelta.y * zoomAmount;
         targetOrthographicSize = Mathf.Clamp(targetOrthographicSize, minOrthographicSize, maxOrthographicSize);
@@ -74,11 +74,14 @@ public class CameraController : MonoBehaviour
         cameraMaxHeight = Height / 2;
 
         if (cameraMaxWidth / Camera.main.aspect < cameraMaxHeight)
-            maxOrthographicSize = cameraMaxWidth / Camera.main.aspect;
-        else
             maxOrthographicSize = cameraMaxHeight;
+        else
+            maxOrthographicSize = cameraMaxWidth / Camera.main.aspect;
 
         cameraMaxWidth += 0.5f;
         cameraMaxHeight += 0.5f;
+
+        Camera.main.orthographicSize = minOrthographicSize;
     }
 }
+
